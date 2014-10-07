@@ -1,2 +1,2 @@
 fbconsole
-subprocess
+urllib3

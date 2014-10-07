@@ -32,7 +32,7 @@ end
 # unset irrelevant variables
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/supayrponey/Documents/Projets/perso/facebookNotifier/facebookenv"
+set -gx VIRTUAL_ENV "/home/supayrponey/facebookenv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

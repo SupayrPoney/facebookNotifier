@@ -1,4 +1,4 @@
-#!/home/supayrponey/Documents/Projets/perso/facebookNotifier/facebookenv/bin/python2
+#!/home/supayrponey/facebookenv/bin/python2
 
 # -*- coding: utf-8 -*-
 import re
