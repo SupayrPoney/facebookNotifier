@@ -32,6 +32,9 @@ pidFile.close()
 
 
 def checkInternetConnection():
+    '''
+        Verifies if the internet connection is up and running
+    '''
     try:
         http = urllib3.PoolManager()
         r = http.request('GET', '74.125.228.100')
@@ -40,6 +43,9 @@ def checkInternetConnection():
     return False
 
 def getNotifications():
+    '''
+        Gets the notifications via the Facebook API
+    '''
     path =  os.path.dirname(os.path.realpath(__file__))
 
     while(True):
@@ -49,7 +55,7 @@ def getNotifications():
                     subprocess.call(["notify-send","From : " + notif[u'from'][u'name'],notif[u'title'] + "\n" + notif[u'link'], "--icon=" + path +"/index.jpg" ])
                     recievedNotifications.append(notif[u'id'])
 
-        time.sleep(3)
+        time.sleep(30)
 
 
 if __name__ == '__main__':
