@@ -23,7 +23,7 @@ fbconsole.authenticate()
 
 ###################  PID STORAGE  ###################
 
-pidFile = open("pidFile.txt",'w')#Keeps the pid so it can be killed easily
+pidFile = open("pidFile.txt", 'w')#Keeps the pid so it can be killed easily
 pidFile.write(str(os.getpid()))
 pidFile.close()
 
@@ -37,22 +37,23 @@ def checkInternetConnection():
     '''
     try:
         http = urllib3.PoolManager()
-        r = http.request('GET', '74.125.228.100')
+        r = http.request('GET', 'www.google.com')
         return True
-    except urllib3.exceptions.MaxRetryError as err: print "Error"
-    return False
+    except urllib3.exceptions.MaxRetryError as err:
+        return False
+
 
 def getNotifications():
     '''
         Gets the notifications via the Facebook API
     '''
-    path =  os.path.dirname(os.path.realpath(__file__))
+    path = os.path.dirname(os.path.realpath(__file__))
 
     while(True):
         if checkInternetConnection():
             for notif in fbconsole.iter_pages(fbconsole.get("/me/notifications")):
                 if (notif[u'id'] not in recievedNotifications):
-                    subprocess.call(["notify-send","From : " + notif[u'from'][u'name'],notif[u'title'] + "\n" + notif[u'link'], "--icon=" + path +"/index.jpg" ])
+                    subprocess.call(["notify-send", "From : " + notif[u'from'][u'name'],notif[u'title'] + "\n" + notif[u'link'], "--icon=" + path +"/index.jpg" ])
                     recievedNotifications.append(notif[u'id'])
 
         time.sleep(30)
