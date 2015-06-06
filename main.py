@@ -4,22 +4,21 @@
 
 
 #####################  IMPORTS  #####################
-import fbconsole
-import subprocess
 import os
 import time
 import urllib3
+import urllib2
+import feedparser
+import pynotify
+import webbrowser
+
 
 
 #####################  GLOBALS  #####################
 
-recievedNotifications = []
+RSS_STREAM = 
+#INSERT YOUR RSS STREAM LINK HERE
 
-
-###############  FACEBOOK CONNECTION  ###############
-
-fbconsole.AUTH_SCOPE = ['manage_notifications']
-fbconsole.authenticate()
 
 ###################  PID STORAGE  ###################
 
@@ -39,25 +38,36 @@ def checkInternetConnection():
         http = urllib3.PoolManager()
         r = http.request('GET', 'www.google.com')
         return True
-    except urllib3.exceptions.MaxRetryError as err:
+    except urllib3.exceptions.MaxRetryError:
         return False
 
+class Notifier(object):
+    """docstring for Notifier"""
+    def __init__(self):
+        self.recievedNotifications = []
+        self.getNotifications()
 
-def getNotifications():
-    '''
-        Gets the notifications via the Facebook API
-    '''
-    path = os.path.dirname(os.path.realpath(__file__))
+    def getNotifications(self):
+        '''
+            Gets the notifications via the Facebook API
+        '''
+        path = os.path.dirname(os.path.realpath(__file__))
 
-    while(True):
-        if checkInternetConnection():
-            for notif in fbconsole.iter_pages(fbconsole.get("/me/notifications")):
-                if (notif[u'id'] not in recievedNotifications):
-                    subprocess.call(["notify-send", "From : " + notif[u'from'][u'name'],notif[u'title'] + "\n" + notif[u'link'], "--icon=" + path +"/index.jpg" ])
-                    recievedNotifications.append(notif[u'id'])
+        while(True):
+            if checkInternetConnection():
+                a = urllib2.urlopen(RSS_STREAM)
+                b = feedparser.parse(a)
+                #for i in range(len(b.entries)):
+                for i in range(len(b.entries)):
+                    if (b.entries[i]['id'] not in self.recievedNotifications):
+                        pynotify.init("notifier")
+                        n = pynotify.Notification("Notifier for Linux", b.entries[i]['title'], path + "/index.jpg")
+                        n.set_hint_string('append', '')
+                        n.show()
+                        self.recievedNotifications.append(b.entries[i]['id'])
 
-        time.sleep(30)
 
+            time.sleep(3)
 
 if __name__ == '__main__':
-    getNotifications()
+    _ = Notifier()
